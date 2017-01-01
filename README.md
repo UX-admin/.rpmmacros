@@ -1,5 +1,3 @@
-rpmmacros(5) File Formats rpmmacros(5)
-
 **NAME**
 
 rpmmacros - macro definitions for building runtime platform RPM packages
