@@ -1,0 +1,85 @@
+#
+# CDDL HEADER START
+#
+# The  contents of this file are subject to the terms of the Common
+# Development and  Distribution  License,  Version  1.0  only  (the
+# "License").  You  may not use this file except in compliance with
+# the License.
+# 
+# A copy of the Common  Development  and  Distribution  License  is
+# included  in  this  repository under the "LICENSE" file name. See
+# the License for the specific language governing  permissions  and
+# limitations under the License.
+# 
+# When  distributing Covered Code, include this CDDL header in each
+# file, and include the "LICENSE" file.
+# 
+# If applicable, add the following below this CDDL header, with the
+# fields   enclosed   by  brackets  "[]"  replaced  with  your  own
+# identifying  information:  Portions  Copyright  [yyyy]  [name  of
+# copyright owner]
+#
+# CDDL HEADER END
+#
+%HOME		%{expand:%%(echo $HOME)}
+%RTP_BASE       opt/rtp
+%_topdir        %{HOME}/devel/rpms
+%_prefix        /%{RTP_BASE}
+%_sysconfdir    /etc/%{RTP_BASE}
+%_localstatedir /var/%{RTP_BASE}
+%_defaultdocdir /%{RTP_BASE}/share/doc
+%_mandir        /%{RTP_BASE}/share/man
+%_infodir       /%{RTP_BASE}/share/info
+%__printf       /usr/bin/printf
+%__python       /%{RTP_BASE}/bin/python
+#
+# The  following  could  be used as an example to chain  together
+# logic to use multiple distributions.
+#
+#%%dist		%{expand:%%{?_with_sles:.sles}%%{!?_with_sles:%%{default_dist}}}
+#
+# Raw vendor/distribution strings (with no dots).
+#
+%ubuntu_string	ubuntu
+%el5_string	el5
+%el6_string	el6
+#
+# Used  in  the  package  name, typically as part of the  release
+# identifier...
+# ubuntu: no dot prepended (as per their documented naming spec).
+# el5, el6, sles: must have a dot prepended.
+#
+# Typical usage example in the spec file:
+# Release: 01%{?dist}
+#
+# To pass this in from rpmbuild:
+# rpmbuild --with ubuntu ...
+# rpmbuild --with el5 ...
+#
+# Starting  with EL6 (and SLES in general), %dist is defined,  so
+# the  following  should be disabled  if building on an operating
+# system newer than EL6 or on SLES. For details, refer to:
+#
+# https://bugzilla.redhat.com/show_bug.cgi?id=613985
+# http://rhn.redhat.com/errata/RHEA-2011-0985.html
+#
+# in  fact, using "BuildRequires: buildsys-macros" as  documented
+# in the bug report and the errata might be a better solution.
+#
+%dist		%{expand:%%{?_with_ubuntu:%{ubuntu_string}}%%{?_with_el5:.%{el5_string}}%%{?_with_el6:.%{el6_string}}}
+#
+# Same string, always with dots prepended, useful for naming in-
+# clude  files  and  source files. It is OK for this macro to be
+# blank to support older packages.
+#
+# Typical usage example:
+# Source0: barfo_post%{rtp_dist}.sh   (will expand to barfo_post.ubuntu.sh)
+#
+%rtp_dist	%{expand:%%{?_with_ubuntu:.%{ubuntu_string}}%%{?_with_el5:.%{el5_string}}%%{?_with_el6:.%{el6_string}}}
+#
+# Convenience macros for simple if/endif blocks in the spec file.
+#
+%ubuntu		%{expand:%%{?_with_ubuntu:1}%%{!?_with_ubuntu:0}}
+%redhat		%{expand:%%{?_with_ubuntu:0}%%{!?_with_ubuntu:1}}
+%el5		%{expand:%%{?_with_el5:1}%%{!?_with_el5:0}}
+%el6		%{expand:%%{?_with_el6:1}%%{!?_with_el6:0}}
