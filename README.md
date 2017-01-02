@@ -6,7 +6,7 @@ rpmmacros - macro definitions for building runtime platform RPM packages
 
 In addition to being compiled to build packages in the /usr/src/
 directory, the redhat package manager also reads /etc/rpmmacros and
-$HOME/.rpmmacros_ file, and will override, as well as augment built-in
+$HOME/.rpmmacros file, and will override, as well as augment built-in
 macro definitions with the ones found in the above files.
 
 This repository contains the macro overrides of the rpm built-ins, as well as
